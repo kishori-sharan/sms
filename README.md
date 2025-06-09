@@ -84,7 +84,7 @@ You have **two options** to run the FastAPI app:
 From your project root directory (`sms/`), run:
 
 ```bash
-uvicorn app.main:app --reload
+ uvicorn app.main:app --reload --log-level debug
 ```
 
 Then open your browser and navigate to:
