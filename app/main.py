@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 import mysql.connector
 import hashlib
 import os
@@ -11,6 +13,9 @@ load_dotenv()  # Load database credentials from .env file
 
 app = FastAPI()
 BASE_DIR = Path(__file__).resolve().parent
+
+# 1. Mount static/ with name="static"
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 def get_db_connection():
@@ -49,3 +54,4 @@ def login(username: str = Form(...), password: str = Form(...), role: str = Form
 @app.get("/home", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
+

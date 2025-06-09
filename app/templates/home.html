@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet"
+      href="{{ request.url_for('static', path='style.css') }}">
     <title>Home</title>
 </head>
 <body>
-    <h1>Welcome to the Student Management System</h1>
-    <p>You have successfully logged in.</p>
+    <header>
+        <h1>Student Management System</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>Welcome!</h2>
+            <p>You have successfully logged in.</p>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 Student Management System | Designed for educational purposes
+    </footer>
 </body>
 </html>
