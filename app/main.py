@@ -32,6 +32,8 @@ def login_page(request: Request):
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...), role: str = Form("Student")):
+    print(f"Received login request for username: {username}")
+
     salted_password = hashlib.sha256((password + username + "_salt").encode()).hexdigest()
 
     conn = get_db_connection()
