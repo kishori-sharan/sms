@@ -19,12 +19,24 @@ app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="stat
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
-    )
+    host = os.getenv("DB_HOST")
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+    database = os.getenv("DB_NAME")
+    # print(f"Inside get_db_connection()")
+    try:
+        connection = mysql.connector.connect(
+                        host=host,
+                        user=user,
+                        password=password,
+                        database=database,
+                        use_pure=True,          # Important
+                        connection_timeout=5
+                    )
+        return connection
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise
 
 @app.get("/", response_class=HTMLResponse)
 def login_page(request: Request):
@@ -36,7 +48,9 @@ def login(username: str = Form(...), password: str = Form(...), role: str = Form
 
     salted_password = hashlib.sha256((password + username + "_salt").encode()).hexdigest()
 
+    print(f"Before get_db_connection")
     conn = get_db_connection()
+    print(f"After get_db_connection")
     cursor = conn.cursor()
     cursor.execute('''
         SELECT users.id FROM users
