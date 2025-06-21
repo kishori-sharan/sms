@@ -1,0 +1,6 @@
+<header style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Student Management System</h1>
+    {% if request.session.get("user_id") %}
+        <a href="/logout" style="margin-right: 20px;">Logout</a>
+    {% endif %}
+</header>

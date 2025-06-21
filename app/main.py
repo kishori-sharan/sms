@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Request, Form, status
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 import mysql.connector
 import hashlib
@@ -9,9 +11,28 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()  # Load database credentials from .env file
+load_dotenv()  # Already loads .env
+
+SESSION_SECRET_KEY = os.getenv("WEB_SESSION_SECRET_KEY", "default_secret")
+SESSION_TIMEOUT = int(os.getenv("WEB_SESSION_TIMEOUT", "3600"))
 
 app = FastAPI()
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_SECRET_KEY,
+    max_age=SESSION_TIMEOUT
+)
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+
+app.add_middleware(NoCacheMiddleware)
+
 BASE_DIR = Path(__file__).resolve().parent
 
 # 1. Mount static/ with name="static"
@@ -39,11 +60,12 @@ def get_db_connection():
         raise
 
 @app.get("/", response_class=HTMLResponse)
-def login_page(request: Request):
+async def login_page(request: Request):
+    request.session.clear()  # Clear session on login page load
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login")
-def login(username: str = Form(...), password: str = Form(...), role: str = Form("Student")):
+async def login(request: Request, username: str = Form(...), password: str = Form(...), role: str = Form("Student")):
     print(f"Received login request for username: {username}")
 
     salted_password = hashlib.sha256((password + username + "_salt").encode()).hexdigest()
@@ -64,10 +86,23 @@ def login(username: str = Form(...), password: str = Form(...), role: str = Form
     conn.close()
 
     if user:
+        # Start session
+        request.session["user_id"] = user[0]
+        request.session["username"] = username
+        request.session["role"] = role
         return RedirectResponse(url="/home", status_code=303)
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/home", response_class=HTMLResponse)
-def home(request: Request):
+async def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
+
+@app.api_route("/logout", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+async def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.get("/favicon.ico")
+async def favicon():
+    return Response(status_code=204)
 
