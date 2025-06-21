@@ -8,6 +8,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import mysql.connector
 import hashlib
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -67,12 +68,8 @@ async def login_page(request: Request):
 @app.post("/login")
 async def login(request: Request, username: str = Form(...), password: str = Form(...), role: str = Form("Student")):
     print(f"Received login request for username: {username}")
-
     salted_password = hashlib.sha256((password + username + "_salt").encode()).hexdigest()
-
-    print(f"Before get_db_connection")
     conn = get_db_connection()
-    print(f"After get_db_connection")
     cursor = conn.cursor()
     cursor.execute('''
         SELECT users.id FROM users
@@ -97,12 +94,21 @@ async def login(request: Request, username: str = Form(...), password: str = For
 async def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-@app.api_route("/logout", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+@app.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    request.session.clear()    
+    return RedirectResponse(url="/", status_code=303)
 
 @app.get("/favicon.ico")
 async def favicon():
     return Response(status_code=204)
 
+
+print("\nRegistered routes:", file=sys.stderr)
+for route in app.routes:
+    if hasattr(route, "methods"):
+        print(f"{route.path} -> {route.methods}", file=sys.stderr)
+    else:
+        print(f"{route.path} -> (no methods)", file=sys.stderr)
+
+print("▶  Running file:", os.path.abspath(__file__), file=sys.stderr)
