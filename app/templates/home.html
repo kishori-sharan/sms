@@ -10,8 +10,21 @@
 
     <main>
         <div class="container">
-            <h2>Welcome!</h2>
-            <p>You have successfully logged in.</p>
+            <h2>Welcome, {{ request.session.get('username', 'User') }}!</h2>
+
+            {% if request.session.get('role') == 'Administrator' %}
+            <section class="manage-section">
+                <h3>Manage</h3>
+                <ul>
+                    <li><a href="/manage/users">Users</a></li>
+                    <li><a href="/manage/roles">Roles</a></li>
+                    <li><a href="/manage/user_roles">User-Role</a></li>
+                    <li><a href="/manage/personal_info">Person</a></li>
+                    <li><a href="/manage/addresses">Address</a></li>
+                    <li><a href="/manage/contact_info">Phone/Email</a></li>
+                </ul>
+            </section>
+            {% endif %}
         </div>
     </main>
 

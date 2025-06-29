@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet"
+      href="{{ request.url_for('static', path='style.css') }}">
+    <title>Logged Out</title>
+</head>
+<body>
+    {% include "header.html" %}
+
+    <main>
+        <div class="container">
+            <h2>You have been logged out successfully.</h2>
+            <a href="/">Click here to login again</a>
+        </div>
+    </main>
+
+    {% include "footer.html" %}
+</body>
+</html>
