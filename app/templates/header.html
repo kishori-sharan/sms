@@ -7,35 +7,40 @@
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 32px 8px 32px;">
         <nav style="display: flex; gap: 20px;">
             {% if request.session.get("user_id") %}
-                <a href="/home">Home</a>
-                {% if request.session.get("role") == "Administrator" %}
-                    <a href="/manage/person_search">Person Search</a>
-                {% endif %}
+            <a href="/home">Home</a>
+            {% if request.session.get("role") == "Administrator" %}
+            <a href="/manage/person_search">Person Search</a>
+            {% endif %}
             {% endif %}
         </nav>
         <div>
             {% if request.session.get("user_id") %}
-                <div style="position: relative; display: inline-block;">
-                    <span style="cursor: pointer;" onclick="toggleUserMenu()">
-                        {{ request.session.get('username') }} &#x25BC;
-                    </span>
-                    <div id="userDropdown" style="display: none; position: absolute; right: 0; background: #fff; border: 1px solid #ccc; min-width: 120px; z-index: 100;">
-                        <a href="/logout" style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Logout</a>
-                    </div>
+            <div style="position: relative; display: inline-block;">
+                <span style="cursor: pointer;" onclick="toggleUserMenu()" id="userMenuToggle">
+                    {{ request.session.get('first_name', '') }} {{ request.session.get('last_name', '') }} &#x25BC;
+                </span>
+                <div id="userDropdown"
+                    style="display: none; position: absolute; right: 0; background: #fff; border: 1px solid #ccc; min-width: 120px; z-index: 100;">
+                    <a href="/profile"
+                        style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Profile</a>
+                    <a href="/logout"
+                        style="display: block; padding: 8px 16px; text-decoration: none; color: #333;">Logout</a>
                 </div>
-                <script>
-                    function toggleUserMenu() {
-                        var menu = document.getElementById('userDropdown');
-                        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+            </div>
+            <script>
+                function toggleUserMenu() {
+                    var menu = document.getElementById('userDropdown');
+                    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+                }
+                // Hide dropdown when clicking outside or on the toggle itself
+                document.addEventListener('click', function (event) {
+                    var dropdown = document.getElementById('userDropdown');
+                    var toggle = document.getElementById('userMenuToggle');
+                    if (dropdown && toggle && !dropdown.contains(event.target) && !toggle.contains(event.target)) {
+                        dropdown.style.display = 'none';
                     }
-                    // Hide dropdown when clicking outside
-                    document.addEventListener('click', function(event) {
-                        var dropdown = document.getElementById('userDropdown');
-                        if (dropdown && !dropdown.contains(event.target) && event.target.innerText !== '{{ request.session.get('username') }} ▼') {
-                            dropdown.style.display = 'none';
-                        }
-                    });
-                </script>
+                });
+            </script>
             {% endif %}
         </div>
     </div>
