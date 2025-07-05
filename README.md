@@ -62,9 +62,12 @@ Create a `.env` file in your project root folder with this content:
 
 ```
 DB_HOST=localhost
-DB_USER=your_db_username
-DB_PASSWORD=your_db_password
+DB_USER=root
+DB_PASSWORD=mySMS#1942
 DB_NAME=student_mgmt
+WEB_SESSION_SECRET_KEY=mySecret^1942
+WEB_SESSION_TIMEOUT=3600
+MAX_SEARCH_RESULTS=5000
 ```
 
 Replace `your_db_username` and `your_db_password` with your actual MySQL credentials.

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Person Search</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="form-container">
+            <h2 class="form-title">Person Search</h2>
+            {% if error %}
+                <div style="color: red; margin-bottom: 15px; text-align: center;">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <form class="fancy-form" action="/manage/person_search/results" method="get" autocomplete="off">
+                <div>
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ first_name or '' }}">
+                </div>
+                <div>
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ last_name or '' }}">
+                </div>
+                <div>
+                    <label for="birth_date">Birth Date:</label>
+                    <input type="date" id="birth_date" name="birth_date" value="{{ birth_date or '' }}">
+                </div>
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender">
+                        <option value="" {% if not gender %}selected{% endif %}>Any</option>
+                        <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="role">Role:</label>
+                    <select id="role" name="role">
+                        <option value="" {% if not role %}selected{% endif %}>Any</option>
+                        <option value="Administrator" {% if role == 'Administrator' %}selected{% endif %}>Administrator</option>
+                        <option value="Faculty" {% if role == 'Faculty' %}selected{% endif %}>Faculty</option>
+                        <option value="Student" {% if role == 'Student' %}selected{% endif %}>Student</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html>

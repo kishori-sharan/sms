@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Person Search Results</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Search Results ({{ total_count }})</h2>
+                <a class="link-add" href="/manage/person_search">New Search</a>
+            </div>
+            <form method="get" action="/manage/person_search/results" style="margin-bottom: 12px;">
+                <!-- Hidden fields to preserve search criteria -->
+                <input type="hidden" name="first_name" value="{{ first_name }}">
+                <input type="hidden" name="last_name" value="{{ last_name }}">
+                <input type="hidden" name="birth_date" value="{{ birth_date }}">
+                <input type="hidden" name="gender" value="{{ gender }}">
+                <input type="hidden" name="role" value="{{ role }}">
+                <label for="page_size">Records per page:</label>
+                <select name="page_size" id="page_size" onchange="this.form.submit()">
+                    {% for size in [10, 20, 50, 100, 200] %}
+                        <option value="{{ size }}" {% if page_size == size %}selected{% endif %}>{{ size }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        {% for col, label in [
+                            ('id', 'ID'),
+                            ('first_name', 'First Name'),
+                            ('last_name', 'Last Name'),
+                            ('birth_date', 'Birth Date'),
+                            ('gender', 'Gender'),
+                            ('role', 'Role')
+                        ] %}
+                        <th>
+                            <a href="?first_name={{ first_name }}&last_name={{ last_name }}&birth_date={{ birth_date }}&gender={{ gender }}&role={{ role }}&page=1&page_size={{ page_size }}&sort_by={{ col }}&sort_order={% if sort_by == col and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                                {{ label }}
+                                {% if sort_by == col %}
+                                    {% if sort_order == 'asc' %}
+                                        &#9650;
+                                    {% else %}
+                                        &#9660;
+                                    {% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for person in persons %}
+                    <tr>
+                        <td>
+                            <a href="/manage/person/{{ person.id }}">{{ person.id }}</a>
+                        </td>
+                        <td>{{ person.first_name }}</td>
+                        <td>{{ person.last_name }}</td>
+                        <td>{{ person.birth_date }}</td>
+                        <td>{{ person.gender }}</td>
+                        <td>{{ person.role or '' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div style="margin-top: 18px; text-align: center;">
+                {% if page > 1 %}
+                    <a class="link-action" href="?first_name={{ first_name }}&last_name={{ last_name }}&birth_date={{ birth_date }}&gender={{ gender }}&role={{ role }}&page={{ page-1 }}&page_size={{ page_size }}">Previous</a>
+                {% endif %}
+                Page {{ page }} of {{ total_pages }}
+                {% if page < total_pages %}
+                    <a class="link-action" href="?first_name={{ first_name }}&last_name={{ last_name }}&birth_date={{ birth_date }}&gender={{ gender }}&role={{ role }}&page={{ page+1 }}&page_size={{ page_size }}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html>

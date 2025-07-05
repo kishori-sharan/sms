@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form, Depends, Query
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 from app.services.person_service import PersonService
+import os
+from starlette.status import HTTP_303_SEE_OTHER
 
 router = APIRouter()
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+MAX_SEARCH_RESULTS = int(os.environ.get("MAX_SEARCH_RESULTS", 5000))
 
 def admin_required(request: Request):
     if request.session.get("role") != "Administrator":
@@ -47,4 +51,79 @@ async def delete_person(request: Request, person_id: int):
     PersonService.delete_person(person_id)
     return RedirectResponse(url="/manage/personal_info", status_code=303)
 
-# Address and contact management (add/edit/delete) can be added similarly
+@router.get("/manage/person_search", response_class=HTMLResponse)
+async def person_search_form(request: Request):
+    admin_required(request)
+    return templates.TemplateResponse("person_search.html", {"request": request})
+
+@router.get("/manage/person_search/results", response_class=HTMLResponse)
+async def person_search_results(
+    request: Request,
+    first_name: str = Query("", alias="first_name"),
+    last_name: str = Query("", alias="last_name"),
+    birth_date: str = Query("", alias="birth_date"),
+    gender: str = Query("", alias="gender"),
+    role: str = Query("", alias="role"),
+    page: int = Query(1, alias="page"),
+    page_size: int = Query(50, alias="page_size"),
+    sort_by: str = Query("first_name", alias="sort_by"),
+    sort_order: str = Query("asc", alias="sort_order"),
+):
+    admin_required(request)
+    total_count = PersonService.count_persons(first_name, last_name, birth_date, gender, role)
+    if total_count > MAX_SEARCH_RESULTS:
+        return templates.TemplateResponse(
+            "person_search.html",
+            {
+                "request": request,
+                "error": "Too many results. Please refine your search criteria.",
+                "first_name": first_name,
+                "last_name": last_name,
+                "birth_date": birth_date,
+                "gender": gender,
+                "role": role,
+            },
+        )
+    offset = (page - 1) * page_size
+    persons = PersonService.search_persons(
+        first_name, last_name, birth_date, gender, role, offset, page_size, sort_by, sort_order
+    )
+    total_pages = (total_count + page_size - 1) // page_size
+    return templates.TemplateResponse(
+        "person_search_results.html",
+        {
+            "request": request,
+            "persons": persons,
+            "first_name": first_name,
+            "last_name": last_name,
+            "birth_date": birth_date,
+            "gender": gender,
+            "role": role,
+            "page": page,
+            "page_size": page_size,
+            "total_count": total_count,
+            "total_pages": total_pages,
+            "sort_by": sort_by,
+            "sort_order": sort_order,
+        },
+    )
+
+@router.get("/manage/person/{person_id}", response_class=HTMLResponse)
+async def person_details(request: Request, person_id: int):
+    # Check if user is logged in and is Administrator
+    if not request.session.get("user_id") or request.session.get("role") != "Administrator":
+        return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
+    person = PersonService.get_person(person_id)
+    addresses = PersonService.get_addresses(person_id)
+    phones = PersonService.get_phones(person_id)
+    roles = PersonService.get_roles(person_id)
+    return templates.TemplateResponse(
+        "person_details.html",
+        {
+            "request": request,
+            "person": person,
+            "addresses": addresses,
+            "phones": phones,
+            "roles": roles,
+        }
+    )

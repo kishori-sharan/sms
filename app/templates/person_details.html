@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Person Details</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .readonly-form label {
+            display: block;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        .readonly-form input, .readonly-form select {
+            width: 100%;
+            padding: 7px 10px;
+            margin-top: 2px;
+            margin-bottom: 8px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .readonly-form input[readonly], .readonly-form select[disabled] {
+            background: #f5f5f5;
+            color: #555;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+        .section-header h3 {
+            margin: 0;
+        }
+        .inline-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .inline-list li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="form-container">
+            <h2 class="form-title">Person Details</h2>
+
+            {% if not person %}
+                <div style="color: red; text-align: center; margin: 32px 0; font-size: 1.2em;">
+                    Person does not exist.
+                </div>
+            {% else %}
+                <!-- General Information Section -->
+                <div class="section-header">
+                    <h3>General Information</h3>
+                    <div>
+                        <a class="link-action" href="/manage/personal_info/edit/{{ person.id }}">Edit</a>
+                        <a class="link-action" href="/manage/personal_info/delete/{{ person.id }}">Delete</a>
+                    </div>
+                </div>
+                <form class="readonly-form">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" value="{{ person.first_name }}" readonly>
+
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" value="{{ person.last_name }}" readonly>
+
+                    <label for="birth_date">Birth Date</label>
+                    <input type="text" id="birth_date" value="{{ person.birth_date }}" readonly>
+
+                    <label for="gender">Gender</label>
+                    <input type="text" id="gender" value="{{ person.gender }}" readonly>
+                </form>
+
+                <!-- Roles Section -->
+                <div class="section-header">
+                    <h3>Roles</h3>
+                </div>
+                <ul class="inline-list">
+                    {% for role in roles %}
+                        <li>{{ role }}</li>
+                    {% else %}
+                        <li>No roles found.</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Contact Information Section -->
+                <div class="section-header">
+                    <h3>Contact Information</h3>
+                </div>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                    <!-- Addresses -->
+                    <div style="flex: 1 1 300px;">
+                        <h4>Addresses</h4>
+                        <ul class="inline-list">
+                            {% for address in addresses %}
+                                <li>
+                                    {{ address.address_type }}:
+                                    {{ address.address_line1 }}
+                                    {% if address.address_line2 %}, {{ address.address_line2 }}{% endif %}
+                                    , {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
+                                </li>
+                            {% else %}
+                                <li>No addresses found.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- Phones/Emails -->
+                    <div style="flex: 1 1 300px;">
+                        <h4>Phones / Emails</h4>
+                        <ul class="inline-list">
+                            {% for contact in phones %}
+                                <li>
+                                    {{ contact.contact_type }}: {{ contact.contact_value }}
+                                </li>
+                            {% else %}
+                                <li>No phone or email found.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html>
