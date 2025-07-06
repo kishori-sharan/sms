@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
     <style>
         .form-container {
-            max-width: 500px;
+            max-width: 800px;
             margin: 40px auto;
             background: #fff;
             border-radius: 10px;
@@ -67,6 +67,178 @@
         .link-cancel:hover {
             color: #0056b3;
         }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 1em;
+            background: #f8fafc;
+            transition: border 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border: 1.5px solid #007bff;
+            outline: none;
+            background: #fff;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .contact-item, .address-item {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fff;
+        }
+        .contact-item h4, .address-item h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        .remove-btn {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            float: right;
+        }
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        /* Ensure dynamic elements inherit styles */
+        .contact-item .form-group,
+        .address-item .form-group {
+            margin-bottom: 15px;
+        }
+        .contact-item .form-group label,
+        .address-item .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .contact-item .form-group input[type="text"],
+        .contact-item .form-group select,
+        .address-item .form-group input[type="text"],
+        .address-item .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 1em;
+            background: #f8fafc;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        /* Ensure all form elements have proper width */
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .contact-item .form-group input:focus,
+        .contact-item .form-group select:focus,
+        .address-item .form-group input:focus,
+        .address-item .form-group select:focus {
+            border: 1.5px solid #007bff;
+            outline: none;
+            background: #fff;
+        }
+        .contact-item .form-row,
+        .address-item .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .contact-item .form-row .form-group,
+        .address-item .form-row .form-group {
+            flex: 1;
+        }
+        /* Ensure single form groups in rows take full width */
+        .form-row .form-group:only-child {
+            flex: 1;
+            width: 100%;
+        }
+        .address-item .form-row .form-group:only-child,
+        .contact-item .form-row .form-group:only-child {
+            flex: 1;
+            width: 100%;
+        }
+        /* Force width for all select elements in address and contact items */
+        .address-item select,
+        .contact-item select {
+            width: 100% !important;
+            min-width: 200px !important;
+            box-sizing: border-box !important;
+        }
+        /* Force width for all form groups in address and contact items */
+        .address-item .form-group,
+        .contact-item .form-group {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        /* Ensure form rows in address and contact items work properly */
+        .address-item .form-row,
+        .contact-item .form-row {
+            display: flex !important;
+            gap: 15px !important;
+            margin-bottom: 15px !important;
+            width: 100% !important;
+        }
+        .address-item .form-row .form-group,
+        .contact-item .form-row .form-group {
+            flex: 1 !important;
+            width: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -75,28 +247,241 @@
         <div class="form-container">
             <h2 class="form-title">Add Person</h2>
             <form class="fancy-form" action="/manage/personal_info/add" method="post" autocomplete="off">
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" required>
+                
+                <!-- Personal Information Section -->
+                <div class="section">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name:</label>
+                            <input type="text" id="first_name" name="first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" id="last_name" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birth_date">Birth Date:</label>
+                            <input type="date" id="birth_date" name="birth_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-                <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name" required>
+                <!-- Addresses Section -->
+                <div class="section">
+                    <h3>Addresses</h3>
+                    <div id="addresses-container">
+                        <div class="address-item">
+                            <h4>Address #1</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="address_type_0">Address Type:</label>
+                                    <select id="address_type_0" name="address_type_0">
+                                        <option value="Home">Home</option>
+                                        <option value="Work">Work</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address_line1_0">Address Line 1:</label>
+                                <input type="text" id="address_line1_0" name="address_line1_0">
+                            </div>
+                            <div class="form-group">
+                                <label for="address_line2_0">Address Line 2:</label>
+                                <input type="text" id="address_line2_0" name="address_line2_0">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city_0">City:</label>
+                                    <input type="text" id="city_0" name="city_0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="state_0">State:</label>
+                                    <input type="text" id="state_0" name="state_0">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="postal_code_0">Postal Code:</label>
+                                    <input type="text" id="postal_code_0" name="postal_code_0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="country_0">Country:</label>
+                                    <input type="text" id="country_0" name="country_0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addAddress()">Add Another Address</button>
+                </div>
 
-                <label for="birth_date">Birth Date:</label>
-                <input type="date" id="birth_date" name="birth_date" required>
-
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender">
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                </select>
+                <!-- Contact Information Section -->
+                <div class="section">
+                    <h3>Contact Information</h3>
+                    <div id="contacts-container">
+                        <div class="contact-item">
+                            <h4>Contact #1</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contact_type_0">Contact Type:</label>
+                                    <select id="contact_type_0" name="contact_type_0">
+                                        <option value="Phone">Phone</option>
+                                        <option value="Email">Email</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact_value_0">Contact Value:</label>
+                                    <input type="text" id="contact_value_0" name="contact_value_0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addContact()">Add Another Contact</button>
+                </div>
 
                 <div class="form-actions">
-                    <button class="btn-primary" type="submit">Add</button>
-                    <a class="link-cancel" href="/manage/personal_info">Cancel</a>
+                    <button class="btn-primary" type="submit">Add Person</button>
+                    <a class="link-cancel" href="/manage/person_search">Cancel</a>
                 </div>
             </form>
         </div>
+
+        <script>
+            let addressCount = 1;
+            let contactCount = 1;
+
+            function addAddress() {
+                const container = document.getElementById('addresses-container');
+                const newAddress = document.createElement('div');
+                newAddress.className = 'address-item';
+                
+                const addressNumber = addressCount + 1;
+                newAddress.innerHTML = `
+                    <h4>Address #${addressNumber} <button type="button" class="remove-btn" onclick="removeAddress(this)">Remove</button></h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="address_type_${addressCount}">Address Type:</label>
+                            <select id="address_type_${addressCount}" name="address_type_${addressCount}">
+                                <option value="Home">Home</option>
+                                <option value="Work">Work</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address_line1_${addressCount}">Address Line 1:</label>
+                        <input type="text" id="address_line1_${addressCount}" name="address_line1_${addressCount}">
+                    </div>
+                    <div class="form-group">
+                        <label for="address_line2_${addressCount}">Address Line 2:</label>
+                        <input type="text" id="address_line2_${addressCount}" name="address_line2_${addressCount}">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city_${addressCount}">City:</label>
+                            <input type="text" id="city_${addressCount}" name="city_${addressCount}">
+                        </div>
+                        <div class="form-group">
+                            <label for="state_${addressCount}">State:</label>
+                            <input type="text" id="state_${addressCount}" name="state_${addressCount}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postal_code_${addressCount}">Postal Code:</label>
+                            <input type="text" id="postal_code_${addressCount}" name="postal_code_${addressCount}">
+                        </div>
+                        <div class="form-group">
+                            <label for="country_${addressCount}">Country:</label>
+                            <input type="text" id="country_${addressCount}" name="country_${addressCount}">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(newAddress);
+                
+                // Force style application to the new elements
+                setTimeout(() => {
+                    const newSelects = newAddress.querySelectorAll('select');
+                    newSelects.forEach(select => {
+                        select.style.width = '100%';
+                        select.style.minWidth = '200px';
+                        select.style.boxSizing = 'border-box';
+                    });
+                    
+                    const newFormGroups = newAddress.querySelectorAll('.form-group');
+                    newFormGroups.forEach(group => {
+                        group.style.width = '100%';
+                        group.style.boxSizing = 'border-box';
+                    });
+                }, 10);
+                
+                addressCount++;
+            }
+
+            function removeAddress(button) {
+                button.parentElement.parentElement.remove();
+            }
+
+            function addContact() {
+                const container = document.getElementById('contacts-container');
+                const newContact = document.createElement('div');
+                newContact.className = 'contact-item';
+                
+                const contactNumber = contactCount + 1;
+                newContact.innerHTML = `
+                    <h4>Contact #${contactNumber} <button type="button" class="remove-btn" onclick="removeContact(this)">Remove</button></h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact_type_${contactCount}">Contact Type:</label>
+                            <select id="contact_type_${contactCount}" name="contact_type_${contactCount}">
+                                <option value="Phone">Phone</option>
+                                <option value="Email">Email</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact_value_${contactCount}">Contact Value:</label>
+                            <input type="text" id="contact_value_${contactCount}" name="contact_value_${contactCount}">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(newContact);
+                
+                // Force style application to the new elements
+                setTimeout(() => {
+                    const newSelects = newContact.querySelectorAll('select');
+                    newSelects.forEach(select => {
+                        select.style.width = '100%';
+                        select.style.minWidth = '200px';
+                        select.style.boxSizing = 'border-box';
+                    });
+                    
+                    const newFormGroups = newContact.querySelectorAll('.form-group');
+                    newFormGroups.forEach(group => {
+                        group.style.width = '100%';
+                        group.style.boxSizing = 'border-box';
+                    });
+                }, 10);
+                
+                contactCount++;
+            }
+
+            function removeContact(button) {
+                button.parentElement.parentElement.remove();
+            }
+        </script>
     </main>
     {% include "footer.html" %}
 </body>

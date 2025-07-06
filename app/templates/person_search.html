@@ -8,7 +8,10 @@
     {% include "header.html" %}
     <main>
         <div class="form-container">
-            <h2 class="form-title">Person Search</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="form-title" style="margin: 0;">Person Search</h2>
+                <a href="/manage/personal_info/add" class="btn-primary" style="text-decoration: none; padding: 8px 16px;">Add New Person</a>
+            </div>
             {% if error %}
                 <div style="color: red; margin-bottom: 15px; text-align: center;">
                     {{ error }}

@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS addresses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     person_id INT NOT NULL,
-    address_type ENUM('Home', 'Work', 'Other') DEFAULT 'Home',
+    address_type ENUM('Home', 'Work', 'School', 'Other') DEFAULT 'Home',
     address_line1 VARCHAR(100) NOT NULL,
     address_line2 VARCHAR(100),
     city VARCHAR(50),

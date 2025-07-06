@@ -22,17 +22,17 @@ class PersonService:
         return addresses
 
     @staticmethod
-    def get_phones(person_id):
+    def get_contacts(person_id):
         conn = DBService.get_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute(
-            "SELECT * FROM contact_info WHERE person_id=%s AND contact_type IN ('Phone', 'Mobile')",
+            "SELECT * FROM contact_info WHERE person_id=%s",
             (person_id,)
         )
-        phones = cursor.fetchall()
+        contacts = cursor.fetchall()
         cursor.close()
         conn.close()
-        return phones
+        return contacts
 
     @staticmethod
     def get_roles(person_id):
@@ -88,6 +88,74 @@ class PersonService:
             "INSERT INTO person (first_name, last_name, birth_date, gender) VALUES (%s, %s, %s, %s)",
             (first_name, last_name, birth_date, gender),
         )
+        person_id = cursor.lastrowid
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return person_id
+
+    @staticmethod
+    def add_address(person_id, address_type, address_line1, address_line2, city, state, postal_code, country):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO addresses (person_id, address_type, address_line1, address_line2, city, state, postal_code, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (person_id, address_type, address_line1, address_line2, city, state, postal_code, country),
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @staticmethod
+    def add_contact(person_id, contact_type, contact_value):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO contact_info (person_id, contact_type, contact_value) VALUES (%s, %s, %s)",
+            (person_id, contact_type, contact_value),
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @staticmethod
+    def update_address(address_id, address_type, address_line1, address_line2, city, state, postal_code, country):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE addresses SET address_type=%s, address_line1=%s, address_line2=%s, city=%s, state=%s, postal_code=%s, country=%s WHERE id=%s",
+            (address_type, address_line1, address_line2, city, state, postal_code, country, address_id),
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @staticmethod
+    def delete_address(address_id):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM addresses WHERE id=%s", (address_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @staticmethod
+    def update_contact(contact_id, contact_type, contact_value):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE contact_info SET contact_type=%s, contact_value=%s WHERE id=%s",
+            (contact_type, contact_value, contact_id),
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @staticmethod
+    def delete_contact(contact_id):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM contact_info WHERE id=%s", (contact_id,))
         conn.commit()
         cursor.close()
         conn.close()

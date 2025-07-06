@@ -10,7 +10,10 @@
         <div class="list-container">
             <div class="list-header">
                 <h2>Search Results ({{ total_count }})</h2>
-                <a class="link-add" href="/manage/person_search">New Search</a>
+                <div>
+                    <a class="link-add" href="/manage/person_search">New Search</a>
+                    <a class="link-add" href="/manage/personal_info/add" style="margin-left: 15px;">Add Person</a>
+                </div>
             </div>
             <form method="get" action="/manage/person_search/results" style="margin-bottom: 12px;">
                 <!-- Hidden fields to preserve search criteria -->
