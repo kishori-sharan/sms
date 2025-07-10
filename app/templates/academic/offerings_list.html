@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Offerings</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Course Offerings</h2>
+                <div>
+                    <a class="link-add" href="/academic/offerings/add">Add Offering</a>
+                </div>
+            </div>
+            
+            <!-- Session Filter -->
+            <div style="margin-bottom: 20px;">
+                <form method="GET" action="/academic/offerings">
+                    <label for="session_id">Filter by Session:</label>
+                    <select name="session_id" id="session_id" onchange="this.form.submit()">
+                        <option value="">All Sessions</option>
+                        {% for session in sessions %}
+                            <option value="{{ session.id }}" {% if selected_session == session.id %}selected{% endif %}>
+                                {{ session.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Session</th>
+                        <th>Faculty</th>
+                        <th>Students</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for offering in offerings %}
+                    <tr>
+                        <td>{{ offering.course_code }} - {{ offering.course_name }}</td>
+                        <td>{{ offering.session_name }}</td>
+                        <td>{{ offering.faculty_name }}</td>
+                        <td>{{ offering.current_students }}/{{ offering.max_students }}</td>
+                        <td>{{ 'Active' if offering.is_active else 'Inactive' }}</td>
+                        <td class="action-links">
+                            <a href="/academic/offerings/{{ offering.id }}/edit" class="link-action">Edit</a>
+                            <form method="POST" action="/academic/offerings/{{ offering.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-action">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

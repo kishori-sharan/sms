@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Degree Certificate</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .print-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        
+        .certificate-header {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .certificate-header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+            color: #343a40;
+        }
+        
+        .certificate-content {
+            padding: 40px;
+        }
+        
+        .degree-info {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .degree-name {
+            font-weight: 600;
+            color: #2e7d32;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .degree-details {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .print-button {
+            background: #007bff;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+        
+        .print-button:hover {
+            background: #0056b3;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+            
+            .print-container {
+                box-shadow: none;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="print-container">
+            <div class="certificate-header">
+                <h1>Degree Certificate</h1>
+            </div>
+            
+            <div class="certificate-content">
+                {% if degrees %}
+                    {% for degree in degrees %}
+                        <div class="degree-info">
+                            <div class="degree-name">{{ degree.degree_name }} ({{ degree.abbreviation }})</div>
+                            <div class="degree-details">
+                                <p><strong>Status:</strong> {{ degree.status }}</p>
+                                <p><strong>Enrollment Date:</strong> {{ degree.enrollment_date }}</p>
+                                {% if degree.expected_completion_date %}
+                                    <p><strong>Expected Completion:</strong> {{ degree.expected_completion_date }}</p>
+                                {% endif %}
+                                {% if degree.actual_completion_date %}
+                                    <p><strong>Completed:</strong> {{ degree.actual_completion_date }}</p>
+                                {% endif %}
+                                {% if degree.gpa %}
+                                    <p><strong>GPA:</strong> {{ degree.gpa }}</p>
+                                {% endif %}
+                                {% if degree.credits_earned %}
+                                    <p><strong>Credits Earned:</strong> {{ degree.credits_earned }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    <button onclick="window.print()" class="print-button">Print Certificate</button>
+                {% else %}
+                    <div class="empty-message">
+                        <p>No degree certificates available for printing.</p>
+                        <p>Please contact your academic advisor if you believe this is an error.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

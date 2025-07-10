@@ -12,7 +12,7 @@ class NoCacheMiddleware(BaseHTTPMiddleware):
 
 class AuthRequiredMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        allowed_paths = ["/", "/login", "/logout", "/favicon.ico"]
+        allowed_paths = ["/", "/login", "/logout", "/favicon.ico", "/profile", "/change_password", "/student", "/faculty", "/academic"]
         if (
             request.url.path not in allowed_paths
             and not request.url.path.startswith("/static")

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Course</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Add Course</h2>
+            <form method="POST" action="/academic/courses/add">
+                <label for="code">Course Code:</label>
+                <input type="text" id="code" name="code" required>
+                
+                <label for="name">Course Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+                
+                <label for="credits">Credits:</label>
+                <input type="number" id="credits" name="credits" value="3" min="1" max="10">
+                
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

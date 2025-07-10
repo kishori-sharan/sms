@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course List</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Course List</h2>
+                <div>
+                    <a class="link-add" href="/academic/courses/add">Add Course</a>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Credits</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for course in courses %}
+                    <tr>
+                        <td>{{ course.code }}</td>
+                        <td>{{ course.name }}</td>
+                        <td>{{ course.credits }}</td>
+                        <td>{{ 'Active' if course.is_active else 'Inactive' }}</td>
+                        <td class="action-links">
+                            <a href="/academic/courses/{{ course.id }}/edit" class="link-action">Edit</a>
+                            <form method="POST" action="/academic/courses/{{ course.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-action">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add User for Person</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="form-container">
+            <h2>Add User for Person #{{ person_id }}</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Roles:</label>
+                    <select name="roles" multiple required>
+                        {% for role in roles %}
+                            <option value="{{ role.id }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Active:</label>
+                    <input type="checkbox" name="active" value="1" checked>
+                </div>
+                <button type="submit" class="button">Add User</button>
+                <a href="/manage/person/{{ person_id }}" class="button">Cancel</a>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Course Offering</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Add Course Offering</h2>
+            <form method="POST" action="/academic/offerings/add">
+                <label for="session_id">Academic Session:</label>
+                <select id="session_id" name="session_id" required>
+                    <option value="">Select Session</option>
+                    {% for session in sessions %}
+                        <option value="{{ session.id }}">{{ session.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="course_id">Course:</label>
+                <select id="course_id" name="course_id" required>
+                    <option value="">Select Course</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.code }} - {{ course.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="faculty_id">Faculty:</label>
+                <select id="faculty_id" name="faculty_id" required>
+                    <option value="">Select Faculty</option>
+                    {% for person in faculty %}
+                        <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="max_students">Maximum Students:</label>
+                <input type="number" id="max_students" name="max_students" value="50" min="1" max="200">
+                
+                <button type="submit">Add Offering</button>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

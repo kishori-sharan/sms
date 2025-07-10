@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Academic Sessions</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Academic Sessions</h2>
+                <div>
+                    <a class="link-add" href="/academic/sessions/add">Add Session</a>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for session in sessions %}
+                    <tr>
+                        <td>{{ session.name }}</td>
+                        <td>{{ session.start_date }}</td>
+                        <td>{{ session.end_date }}</td>
+                        <td>{{ 'Active' if session.is_active else 'Inactive' }}</td>
+                        <td class="action-links">
+                            <a href="/academic/sessions/{{ session.id }}/edit" class="link-action">Edit</a>
+                            <form method="POST" action="/academic/sessions/{{ session.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-action">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Academic Session</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Edit Academic Session</h2>
+            <form method="POST" action="/academic/sessions/{{ session.id }}/edit">
+                <label for="name">Session Name:</label>
+                <input type="text" id="name" name="name" value="{{ session.name }}" required style="margin-bottom: 16px;">
+                <div class="form-row">
+                    <div>
+                        <label for="start_date">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ session.start_date }}" required>
+                    </div>
+                    <div>
+                        <label for="end_date">End Date:</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ session.end_date }}" required>
+                    </div>
+                </div>
+                <div style="margin: 16px 0 0 0;">
+                    <label for="is_active" style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="is_active" name="is_active" {% if session.is_active %}checked{% endif %}>
+                        <span>Active</span>
+                    </label>
+                </div>
+                <div style="display: flex; gap: 15px; margin-top: 24px;">
+                    <button type="submit" class="btn">Update Session</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/academic/sessions'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

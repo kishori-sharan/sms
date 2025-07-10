@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Marks - Faculty</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .marks-table th,
+        .marks-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .marks-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .add-mark-form {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="dashboard-container">
+            <div class="section">
+                <h2>Student Marks</h2>
+                
+                <h3>Registration ID: {{ registration_id }}</h3>
+                
+                {% if marks %}
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Assignment Type</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>Remarks</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for mark in marks %}
+                            <tr>
+                                <td>{{ mark.assignment_type }}</td>
+                                <td>{{ mark.marks_obtained }}</td>
+                                <td>{{ mark.total_marks }}</td>
+                                <td>{{ "%.1f"|format((mark.marks_obtained / mark.total_marks) * 100) }}%</td>
+                                <td>{{ mark.remarks or '' }}</td>
+                                <td>{{ mark.create_dt }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-message">
+                        <p>No marks recorded for this student yet.</p>
+                    </div>
+                {% endif %}
+                
+                <div class="add-mark-form">
+                    <h3>Add New Mark</h3>
+                    <form method="POST" action="/faculty/marks/add">
+                        <input type="hidden" name="registration_id" value="{{ registration_id }}">
+                        
+                        <div class="form-row">
+                            <div>
+                                <label for="assignment_type">Assignment Type:</label>
+                                <input type="text" id="assignment_type" name="assignment_type" required>
+                            </div>
+                            <div>
+                                <label for="marks_obtained">Marks Obtained:</label>
+                                <input type="number" id="marks_obtained" name="marks_obtained" step="0.01" required>
+                            </div>
+                            <div>
+                                <label for="total_marks">Total Marks:</label>
+                                <input type="number" id="total_marks" name="total_marks" value="100" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="remarks">Remarks:</label>
+                            <textarea id="remarks" name="remarks" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" style="margin-top: 15px;">Add Mark</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

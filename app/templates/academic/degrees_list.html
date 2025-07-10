@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Degree Programs</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Degree Programs</h2>
+                <div>
+                    <a class="link-add" href="/academic/degrees/add">Add Degree</a>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Abbreviation</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for degree in degrees %}
+                    <tr>
+                        <td>{{ degree.name }}</td>
+                        <td>{{ degree.abbreviation }}</td>
+                        <td>{{ degree.description[:100] }}{% if degree.description|length > 100 %}...{% endif %}</td>
+                        <td>{{ 'Active' if degree.is_active else 'Inactive' }}</td>
+                        <td class="action-links">
+                            <a href="/academic/degrees/{{ degree.id }}/edit" class="link-action">Edit</a>
+                            <form method="POST" action="/academic/degrees/{{ degree.id }}/delete" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                                <button type="submit" class="btn-action">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

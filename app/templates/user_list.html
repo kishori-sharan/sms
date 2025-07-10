@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>User Management</h2>
+<a href="/users/add" class="button">Add User</a>
+<table class="neutral-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Roles</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td>{{ user.roles or '' }}</td>
+            <td>{{ 'Yes' if user.active else 'No' }}</td>
+            <td>
+                <a href="/users/{{ user.id }}/edit" class="button">Edit</a>
+                <form action="/users/{{ user.id }}/delete" method="post" style="display:inline">
+                    <button type="submit" class="button" onclick="return confirm('Delete this user?')">Delete</button>
+                </form>
+                <form action="/users/{{ user.id }}/toggle_active" method="post" style="display:inline">
+                    <input type="hidden" name="active" value="{{ '0' if user.active else '1' }}">
+                    <button type="submit" class="button">{{ 'Deactivate' if user.active else 'Activate' }}</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

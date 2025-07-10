@@ -25,10 +25,15 @@ async def login(request: Request, username: str = Form(...), password: str = For
         request.session["first_name"] = user["first_name"]
         request.session["last_name"] = user["last_name"]
         return RedirectResponse(url="/home", status_code=303)
-    # If login fails, show error on login page
+    # If login fails, show error on login page with form values preserved
     return templates.TemplateResponse(
         "login.html",
-        {"request": request, "error": "Invalid username, password, or role. Please try again."}
+        {
+            "request": request, 
+            "error": "Invalid username, password, role, or your account is deactivated. Please try again or contact admin.",
+            "username": username,
+            "role": role
+        }
     )
 
 @router.get("/logout", response_class=HTMLResponse)

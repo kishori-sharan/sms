@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Degree Program</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Add Degree Program</h2>
+            <form method="POST" action="/academic/degrees/add">
+                <label for="name">Degree Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="abbreviation">Abbreviation:</label>
+                <input type="text" id="abbreviation" name="abbreviation" required>
+                
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+                
+                <button type="submit">Add Degree</button>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

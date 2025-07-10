@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from pathlib import Path
-from app.pages import login, home, favicon, person
+from app.pages import login, home, favicon, person, user, academic
 from app.middleware.core import NoCacheMiddleware, AuthRequiredMiddleware
 import os
 import sys
@@ -35,6 +35,8 @@ app.include_router(login.router)
 app.include_router(home.router)
 app.include_router(favicon.router)
 app.include_router(person.router)
+app.include_router(user.router)
+app.include_router(academic.router)
 
 # Debug: print registered routes
 print("\nRegistered routes:", file=sys.stderr)

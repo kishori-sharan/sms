@@ -18,16 +18,16 @@
             {% endif %}
             <form action="/login" method="post">
                 <label>Username:</label>
-                <input type="text" name="username" required>
+                <input type="text" name="username" value="{{ username or '' }}" required>
 
                 <label>Password:</label>
                 <input type="password" name="password" required>
 
                 <label>Role:</label>
                 <select name="role">
-                    <option>Administrator</option>
-                    <option>Faculty</option>
-                    <option selected>Student</option>
+                    <option value="Administrator" {% if role == 'Administrator' %}selected{% endif %}>Administrator</option>
+                    <option value="Faculty" {% if role == 'Faculty' %}selected{% endif %}>Faculty</option>
+                    <option value="Student" {% if role == 'Student' or not role %}selected{% endif %}>Student</option>
                 </select>
 
                 <button type="submit">Login</button>

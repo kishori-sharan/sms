@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Search</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="form-container">
+            <h2 class="form-title">User Search</h2>
+            <form class="fancy-form" action="/user_search/results" method="get" autocomplete="off">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="{{ username or '' }}">
+                </div>
+                <div>
+                    <label for="role">Role:</label>
+                    <select id="role" name="role">
+                        <option value="" {% if not role %}selected{% endif %}>Any</option>
+                        <option value="Administrator" {% if role == 'Administrator' %}selected{% endif %}>Administrator</option>
+                        <option value="Faculty" {% if role == 'Faculty' %}selected{% endif %}>Faculty</option>
+                        <option value="Student" {% if role == 'Student' %}selected{% endif %}>Student</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="active">Active:</label>
+                    <select id="active" name="active">
+                        <option value="" {% if active == '' %}selected{% endif %}>Any</option>
+                        <option value="1" {% if active == '1' %}selected{% endif %}>Active</option>
+                        <option value="0" {% if active == '0' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

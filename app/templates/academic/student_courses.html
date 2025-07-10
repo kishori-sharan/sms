@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Courses</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .course-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .course-code {
+            font-weight: 600;
+            color: #495057;
+            font-size: 1.1em;
+        }
+        
+        .course-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .status-registered {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-dropped {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .course-details {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="dashboard-container">
+            <div class="section">
+                <h2>My Enrolled Courses</h2>
+                
+                <!-- Session Filter -->
+                <div style="margin-bottom: 20px;">
+                    <form method="GET" action="/student/courses">
+                        <label for="session_id">Filter by Session:</label>
+                        <select name="session_id" id="session_id" onchange="this.form.submit()">
+                            <option value="">All Sessions</option>
+                            {% for session in sessions %}
+                                <option value="{{ session.id }}" {% if selected_session == session.id %}selected{% endif %}>
+                                    {{ session.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                
+                {% if registrations %}
+                    <div class="course-grid">
+                        {% for registration in registrations %}
+                            <div class="course-card">
+                                <div class="course-header">
+                                    <span class="course-code">{{ registration.course_code }} - {{ registration.course_name }}</span>
+                                    <span class="course-status status-{{ registration.status.lower() }}">
+                                        {{ registration.status }}
+                                    </span>
+                                </div>
+                                <div class="course-details">
+                                    <p><strong>Session:</strong> {{ registration.session_name }}</p>
+                                    <p><strong>Faculty:</strong> {{ registration.faculty_name }}</p>
+                                    <p><strong>Credits:</strong> {{ registration.credits }}</p>
+                                    <p><strong>Registration Date:</strong> {{ registration.registration_date }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-message">
+                        <p>You are not enrolled in any courses for this session.</p>
+                        <p><a href="/student/registration">Register for courses</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

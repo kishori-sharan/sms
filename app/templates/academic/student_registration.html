@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Registration</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .course-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .course-code {
+            font-weight: 600;
+            color: #495057;
+            font-size: 1.1em;
+        }
+        
+        .course-details {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .register-btn {
+            background: #007bff;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .register-btn:hover {
+            background: #0056b3;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="dashboard-container">
+            <div class="section">
+                <h2>Course Registration</h2>
+                
+                {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                {% endif %}
+                
+                <!-- Session Filter -->
+                <div style="margin-bottom: 20px;">
+                    <form method="GET" action="/student/registration">
+                        <label for="session_id">Select Session:</label>
+                        <select name="session_id" id="session_id" onchange="this.form.submit()">
+                            <option value="">Select Session</option>
+                            {% for session in sessions %}
+                                <option value="{{ session.id }}" {% if selected_session == session.id %}selected{% endif %}>
+                                    {{ session.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                
+                {% if available_courses %}
+                    <div class="course-grid">
+                        {% for course in available_courses %}
+                            <div class="course-card">
+                                <div class="course-header">
+                                    <span class="course-code">{{ course.course_code }} - {{ course.course_name }}</span>
+                                </div>
+                                <div class="course-details">
+                                    <p><strong>Session:</strong> {{ course.session_name }}</p>
+                                    <p><strong>Faculty:</strong> {{ course.faculty_name }}</p>
+                                    <p><strong>Credits:</strong> {{ course.credits }}</p>
+                                    <p><strong>Available Seats:</strong> {{ course.max_students - course.current_students }}</p>
+                                    <p><strong>Description:</strong> {{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}</p>
+                                </div>
+                                <form method="POST" action="/student/register" style="margin-top: 15px;">
+                                    <input type="hidden" name="offering_id" value="{{ course.id }}">
+                                    <button type="submit" class="register-btn">Register for this Course</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-message">
+                        <p>No courses available for registration in this session.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

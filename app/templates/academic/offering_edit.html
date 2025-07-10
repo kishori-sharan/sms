@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Course Offering</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Edit Course Offering</h2>
+            <form method="POST" action="/academic/offerings/{{ offering.id }}/edit">
+                <div class="form-row">
+                    <div>
+                        <label for="session_id">Academic Session:</label>
+                        <select id="session_id" name="session_id" required>
+                            <option value="">Select Session</option>
+                            {% for session in sessions %}
+                                <option value="{{ session.id }}" {% if offering.session_id == session.id %}selected{% endif %}>{{ session.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="course_id">Course:</label>
+                        <select id="course_id" name="course_id" required>
+                            <option value="">Select Course</option>
+                            {% for course in courses %}
+                                <option value="{{ course.id }}" {% if offering.course_id == course.id %}selected{% endif %}>{{ course.code }} - {{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="faculty_id">Faculty:</label>
+                        <select id="faculty_id" name="faculty_id" required>
+                            <option value="">Select Faculty</option>
+                            {% for person in faculty %}
+                                <option value="{{ person.id }}" {% if offering.faculty_id == person.id %}selected{% endif %}>{{ person.first_name }} {{ person.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="max_students">Maximum Students:</label>
+                        <input type="number" id="max_students" name="max_students" value="{{ offering.max_students }}" min="1" max="200">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 30px;">
+                        <input type="checkbox" id="is_active" name="is_active" {% if offering.is_active %}checked{% endif %}>
+                        <label for="is_active" style="margin: 0;">Active</label>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-top: 24px;">
+                    <button type="submit" class="btn">Update Offering</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/academic/offerings'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

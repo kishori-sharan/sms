@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Search Results</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="list-container">
+            <div class="list-header">
+                <h2>User Search Results</h2>
+                <div>
+                    <a class="link-add" href="/user_search">New Search</a>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Roles</th>
+                        <th>Active</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.roles or '' }}</td>
+                        <td>{{ 'Yes' if user.active else 'No' }}</td>
+                        <td><a href="/manage/person/{{ user.person_id }}">Person Details</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

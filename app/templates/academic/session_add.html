@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Academic Session</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="container">
+            <h2>Add Academic Session</h2>
+            <form method="POST" action="/academic/sessions/add">
+                <label for="name">Session Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required>
+                
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required>
+                
+                <label for="is_active">Active:</label>
+                <input type="checkbox" id="is_active" name="is_active" checked>
+                
+                <button type="submit">Add Session</button>
+            </form>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 

@@ -7,10 +7,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 32px 8px 32px;">
         <nav style="display: flex; gap: 20px;">
             {% if request.session.get("user_id") %}
-            <a href="/home">Home</a>
-            {% if request.session.get("role") == "Administrator" %}
-            <a href="/manage/person_search">Person Search</a>
-            {% endif %}
+            <a href="/home">Home</a>            
             {% endif %}
         </nav>
         <div>

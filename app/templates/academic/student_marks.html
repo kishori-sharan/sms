@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Marks</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .marks-table th,
+        .marks-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .marks-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .grade {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .grade-a {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .grade-b {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .grade-c {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .grade-f {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        <div class="dashboard-container">
+            <div class="section">
+                <h2>My Marks</h2>
+                
+                {% if marks %}
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Assignment Type</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for mark in marks %}
+                            <tr>
+                                <td>{{ mark.course_code }} - {{ mark.course_name }}</td>
+                                <td>{{ mark.assignment_type }}</td>
+                                <td>{{ mark.marks_obtained }}</td>
+                                <td>{{ mark.total_marks }}</td>
+                                <td>{{ "%.1f"|format(mark.percentage) }}%</td>
+                                <td>
+                                    <span class="grade grade-{{ mark.grade.lower() }}">
+                                        {{ mark.grade }}
+                                    </span>
+                                </td>
+                                <td>{{ mark.remarks or '' }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-message">
+                        <p>No marks available yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    {% include "footer.html" %}
+</body>
+</html> 
