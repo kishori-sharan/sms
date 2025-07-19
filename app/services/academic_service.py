@@ -376,6 +376,49 @@ class AcademicService:
         return marks
 
     @staticmethod
+    def get_marks_by_registration(registration_id):
+        conn = DBService.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('''
+            SELECT m.*, c.code, c.name as course_name, sr.offering_id
+            FROM marks m
+            JOIN student_registrations sr ON m.registration_id = sr.id
+            JOIN course_offerings co ON sr.offering_id = co.id
+            JOIN courses c ON co.course_id = c.id
+            WHERE m.registration_id = %s
+            ORDER BY m.assignment_type, m.create_dt
+        ''', (registration_id,))
+        marks = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return marks
+
+    @staticmethod
+    def get_registration_info(registration_id):
+        conn = DBService.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('''
+            SELECT sr.*, 
+                   CONCAT(p.first_name, ' ', p.last_name) as student_name,
+                   u.username as student_username,
+                   c.code as course_code, 
+                   c.name as course_name,
+                   c.credits,
+                   s.name as session_name
+            FROM student_registrations sr
+            JOIN users u ON sr.student_id = u.id
+            JOIN person p ON u.person_id = p.id
+            JOIN course_offerings co ON sr.offering_id = co.id
+            JOIN courses c ON co.course_id = c.id
+            JOIN academic_sessions s ON co.session_id = s.id
+            WHERE sr.id = %s
+        ''', (registration_id,))
+        registration_info = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return registration_info
+
+    @staticmethod
     def add_mark(registration_id, assignment_type, marks_obtained, total_marks=100.00, remarks=None):
         conn = DBService.get_connection()
         cursor = conn.cursor()
@@ -491,6 +534,18 @@ class AcademicService:
         cursor.execute(
             'UPDATE degrees SET name=%s, abbreviation=%s, description=%s, is_active=%s WHERE id=%s',
             (name, abbreviation, description, is_active, degree_id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close() 
+
+    @staticmethod
+    def add_degree(name, abbreviation, description, is_active=True):
+        conn = DBService.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO degrees (name, abbreviation, description, is_active) VALUES (%s, %s, %s, %s)',
+            (name, abbreviation, description, is_active)
         )
         conn.commit()
         cursor.close()

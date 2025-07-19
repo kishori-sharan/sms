@@ -85,6 +85,12 @@
                                     <p><strong>Students:</strong> {{ offering.current_students }}/{{ offering.max_students }}</p>
                                     <p><strong>Credits:</strong> {{ offering.credits }}</p>
                                 </div>
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <a href="/faculty/courses/{{ offering.id }}" class="btn-action" 
+                                       style="background-color: #007bff; color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; display: inline-block;">
+                                        Manage Students & Marks
+                                    </a>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>

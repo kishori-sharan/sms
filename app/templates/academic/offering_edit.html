@@ -35,8 +35,8 @@
                         <label for="faculty_id">Faculty:</label>
                         <select id="faculty_id" name="faculty_id" required>
                             <option value="">Select Faculty</option>
-                            {% for person in faculty %}
-                                <option value="{{ person.id }}" {% if offering.faculty_id == person.id %}selected{% endif %}>{{ person.first_name }} {{ person.last_name }}</option>
+                            {% for faculty_member in faculty %}
+                                <option value="{{ faculty_member.id }}" {% if offering.faculty_id == faculty_member.id %}selected{% endif %}>{{ faculty_member.first_name }} {{ faculty_member.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>

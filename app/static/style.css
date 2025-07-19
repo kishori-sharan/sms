@@ -63,13 +63,27 @@ h1, h2 {
     margin-bottom: 20px;
 }
 
+/* Form groups for proper label-input alignment */
+form > div {
+    margin-bottom: 15px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
 /* Inputs and selects */
 input[type="text"],
 input[type="password"],
+input[type="date"],
 select {
     width: 100%;
     padding: 12px 10px;
-    margin: 10px 0;
+    margin: 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;

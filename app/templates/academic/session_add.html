@@ -10,17 +10,25 @@
         <div class="container">
             <h2>Add Academic Session</h2>
             <form method="POST" action="/academic/sessions/add">
-                <label for="name">Session Name:</label>
-                <input type="text" id="name" name="name" required>
+                <div>
+                    <label for="name">Session Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
                 
-                <label for="start_date">Start Date:</label>
-                <input type="date" id="start_date" name="start_date" required>
+                <div>
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
                 
-                <label for="end_date">End Date:</label>
-                <input type="date" id="end_date" name="end_date" required>
+                <div>
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
                 
-                <label for="is_active">Active:</label>
-                <input type="checkbox" id="is_active" name="is_active" checked>
+                <div>
+                    <label for="is_active">Active:</label>
+                    <input type="checkbox" id="is_active" name="is_active" checked>
+                </div>
                 
                 <button type="submit">Add Session</button>
             </form>

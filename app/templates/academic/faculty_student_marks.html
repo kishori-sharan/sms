@@ -77,7 +77,25 @@
             <div class="section">
                 <h2>Student Marks</h2>
                 
-                <h3>Registration ID: {{ registration_id }}</h3>
+                {% if registration_info %}
+                <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+                    <h3 style="margin-top: 0; color: #495057;">Course & Student Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div>
+                            <strong>Course:</strong> {{ registration_info.course_code }} - {{ registration_info.course_name }}
+                        </div>
+                        <div>
+                            <strong>Student:</strong> {{ registration_info.student_name }} ({{ registration_info.student_username }})
+                        </div>
+                        <div>
+                            <strong>Session:</strong> {{ registration_info.session_name }}
+                        </div>
+                        <div>
+                            <strong>Credits:</strong> {{ registration_info.credits }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 
                 {% if marks %}
                     <table class="marks-table">
@@ -118,7 +136,14 @@
                         <div class="form-row">
                             <div>
                                 <label for="assignment_type">Assignment Type:</label>
-                                <input type="text" id="assignment_type" name="assignment_type" required>
+                                <select id="assignment_type" name="assignment_type" required>
+                                    <option value="">Select Assignment Type</option>
+                                    <option value="Midterm">Midterm</option>
+                                    <option value="Final">Final</option>
+                                    <option value="Assignment">Assignment</option>
+                                    <option value="Project">Project</option>
+                                    <option value="Participation">Participation</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="marks_obtained">Marks Obtained:</label>

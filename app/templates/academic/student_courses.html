@@ -127,6 +127,18 @@
                                     <p><strong>Credits:</strong> {{ registration.credits }}</p>
                                     <p><strong>Registration Date:</strong> {{ registration.registration_date }}</p>
                                 </div>
+                                {% if registration.status.lower() == 'registered' %}
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <form method="POST" action="/student/drop" style="display: inline;">
+                                        <input type="hidden" name="registration_id" value="{{ registration.id }}">
+                                        <button type="submit" class="btn-action" 
+                                                onclick="return confirm('Are you sure you want to drop this course? This action cannot be undone.')"
+                                                style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                                            Drop Course
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>

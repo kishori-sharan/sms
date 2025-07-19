@@ -113,6 +113,24 @@ class UserService:
         return people
 
     @staticmethod
+    def get_faculty_users():
+        conn = DBService.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('''
+            SELECT users.id, users.username, person.first_name, person.last_name
+            FROM users
+            JOIN person ON users.person_id = person.id
+            JOIN user_roles ON users.id = user_roles.user_id
+            JOIN roles ON user_roles.role_id = roles.id
+            WHERE roles.name = 'Faculty' AND users.active = TRUE
+            ORDER BY person.first_name, person.last_name
+        ''')
+        faculty = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return faculty
+
+    @staticmethod
     def search_users(username="", role="", active=""):
         conn = DBService.get_connection()
         cursor = conn.cursor(dictionary=True)

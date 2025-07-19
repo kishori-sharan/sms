@@ -96,15 +96,24 @@ async def delete_course(request: Request, course_id: int):
 
 # Course Offerings Management (Admin only)
 @router.get("/academic/offerings", response_class=HTMLResponse)
-async def list_offerings(request: Request, session_id: int = Query(None)):
+async def list_offerings(request: Request, session_id: str = Query(None)):
     admin_required(request)
-    offerings = AcademicService.get_course_offerings(session_id)
+    
+    # Convert session_id to int if it's not empty, otherwise use None
+    session_id_int = None
+    if session_id and session_id.strip():
+        try:
+            session_id_int = int(session_id)
+        except ValueError:
+            session_id_int = None
+    
+    offerings = AcademicService.get_course_offerings(session_id_int)
     sessions = AcademicService.get_active_sessions()
     return templates.TemplateResponse("academic/offerings_list.html", {
         "request": request, 
         "offerings": offerings, 
         "sessions": sessions,
-        "selected_session": session_id
+        "selected_session": session_id_int
     })
 
 @router.get("/academic/offerings/add", response_class=HTMLResponse)
@@ -112,7 +121,7 @@ async def add_offering_form(request: Request):
     admin_required(request)
     sessions = AcademicService.get_active_sessions()
     courses = AcademicService.get_active_courses()
-    faculty = UserService.get_all_people()  # We'll filter for faculty in template
+    faculty = UserService.get_faculty_users()  # Get only faculty users
     return templates.TemplateResponse("academic/offering_add.html", {
         "request": request, 
         "sessions": sessions, 
@@ -132,7 +141,7 @@ async def edit_offering_form(request: Request, offering_id: int):
     offering = AcademicService.get_course_offerings()[0]  # Get specific offering
     sessions = AcademicService.get_active_sessions()
     courses = AcademicService.get_active_courses()
-    faculty = UserService.get_all_people()
+    faculty = UserService.get_faculty_users()  # Get only faculty users
     return templates.TemplateResponse("academic/offering_edit.html", {
         "request": request, 
         "offering": offering,
@@ -180,11 +189,14 @@ async def faculty_course_details(request: Request, offering_id: int):
 async def faculty_student_marks(request: Request, registration_id: int):
     faculty_required(request)
     # Get student marks for this registration
-    marks = AcademicService.get_student_marks(registration_id)
+    marks = AcademicService.get_marks_by_registration(registration_id)
+    # Get student and course information for this registration
+    registration_info = AcademicService.get_registration_info(registration_id)
     return templates.TemplateResponse("academic/faculty_student_marks.html", {
         "request": request, 
         "marks": marks,
-        "registration_id": registration_id
+        "registration_id": registration_id,
+        "registration_info": registration_info
     })
 
 @router.post("/faculty/marks/add")
@@ -207,29 +219,47 @@ async def student_dashboard(request: Request):
     })
 
 @router.get("/student/courses", response_class=HTMLResponse)
-async def student_courses(request: Request, session_id: int = Query(None)):
+async def student_courses(request: Request, session_id: str = Query(None)):
     student_required(request)
     student_id = request.session.get("user_id")
-    registrations = AcademicService.get_student_registrations(student_id, session_id)
+    
+    # Convert session_id to int if it's not empty, otherwise use None
+    session_id_int = None
+    if session_id and session_id.strip():
+        try:
+            session_id_int = int(session_id)
+        except ValueError:
+            session_id_int = None
+    
+    registrations = AcademicService.get_student_registrations(student_id, session_id_int)
     sessions = AcademicService.get_active_sessions()
     return templates.TemplateResponse("academic/student_courses.html", {
         "request": request, 
         "registrations": registrations,
         "sessions": sessions,
-        "selected_session": session_id
+        "selected_session": session_id_int
     })
 
 @router.get("/student/registration", response_class=HTMLResponse)
-async def student_registration_form(request: Request, session_id: int = Query(None)):
+async def student_registration_form(request: Request, session_id: str = Query(None)):
     student_required(request)
     student_id = request.session.get("user_id")
-    available_courses = AcademicService.get_available_courses_for_registration(student_id, session_id)
+    
+    # Convert session_id to int if it's not empty, otherwise use None
+    session_id_int = None
+    if session_id and session_id.strip():
+        try:
+            session_id_int = int(session_id)
+        except ValueError:
+            session_id_int = None
+    
+    available_courses = AcademicService.get_available_courses_for_registration(student_id, session_id_int)
     sessions = AcademicService.get_active_sessions()
     return templates.TemplateResponse("academic/student_registration.html", {
         "request": request, 
         "available_courses": available_courses,
         "sessions": sessions,
-        "selected_session": session_id
+        "selected_session": session_id_int
     })
 
 @router.post("/student/register")
@@ -276,7 +306,7 @@ async def add_degree_form(request: Request):
 @router.post("/academic/degrees/add")
 async def add_degree(request: Request, name: str = Form(...), abbreviation: str = Form(...), description: str = Form(...)):
     admin_required(request)
-    # This would need to be implemented in AcademicService
+    AcademicService.add_degree(name, abbreviation, description)
     return RedirectResponse(url="/academic/degrees", status_code=303)
 
 @router.get("/academic/degrees/{degree_id}/edit", response_class=HTMLResponse)
